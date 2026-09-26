@@ -9,7 +9,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #5e080e;
+  background: #f4efe6;
 }
 
 body {
@@ -22,41 +22,52 @@ body {
   width: 100vw;
   height: 100dvh;
   overflow: hidden;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  background:
-    radial-gradient(
-      circle at center,
-      #a51a22 0%,
-      #8e1018 55%,
-      #62070d 100%
-    );
+
+  /* OFF-WHITE OUTSIDE THE CARD */
+  background: #f4efe6;
 }
 
 /* ACTUAL INVITATION UNDERNEATH */
 
 .invitation {
   position: absolute;
-  width: min(100vw, 1080px);
+
+  width: min(80vw, 1080px);
   height: auto;
-  max-height: 100dvh;
+  max-height: 94vh;
+
   object-fit: contain;
+
   display: block;
+
   user-select: none;
   -webkit-user-drag: none;
+
+  pointer-events: none;
 }
 
 /* SCRATCH CANVAS */
 
 #scratchCanvas {
   position: absolute;
-  inset: 0;
+
   width: 100%;
   height: 100%;
+
+  inset: 0;
+
   display: block;
+
   cursor: grab;
+
   touch-action: none;
+
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #scratchCanvas:active {
@@ -67,11 +78,14 @@ body {
 
 .instruction {
   position: absolute;
+
   left: 50%;
   top: 50%;
+
   transform: translate(-50%, -50%);
 
   text-align: center;
+
   color: #f9e6b2;
 
   pointer-events: none;
@@ -83,18 +97,25 @@ body {
 
 .instruction.hidden {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.94);
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.94);
 }
 
 .instruction-icon {
   font-size: 22px;
+
   margin-bottom: 10px;
+
   opacity: 0.9;
 }
 
 .instruction-text {
   font-size: 14px;
+
   letter-spacing: 3px;
+
   text-transform: uppercase;
 
   text-shadow:
@@ -105,37 +126,87 @@ body {
 
 #confettiCanvas {
   position: absolute;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
 
   pointer-events: none;
 
   opacity: 0;
-  transition: opacity 0.3s ease;
+
+  transition:
+    opacity 0.3s ease;
 }
 
 #confettiCanvas.active {
   opacity: 1;
 }
 
-/* WHITE/IVORY FADE */
+/* FADE */
 
 #fade {
   position: absolute;
+
   inset: 0;
 
   background: #f7f0e2;
 
   opacity: 0;
+
   pointer-events: none;
 
-  transition: opacity 0.8s ease;
+  transition:
+    opacity 0.8s ease;
 }
 
 #fade.active {
   opacity: 1;
 }
+
+
+/* --------------------------------
+   DESKTOP
+-------------------------------- */
+
+@media (min-width: 701px) {
+
+  .invitation {
+    width: min(80vw, 1080px);
+    max-height: 94vh;
+  }
+
+}
+
+
+/* --------------------------------
+   TABLET
+-------------------------------- */
+
+@media (min-width: 701px) and (max-width: 1200px) {
+
+  .invitation {
+    width: min(90vw, 900px);
+    max-height: 96vh;
+  }
+
+}
+
+
+/* --------------------------------
+   MOBILE
+-------------------------------- */
+
+@media (max-width: 700px) {
+
+  .invitation {
+    width: 100vw;
+    max-height: none;
+  }
+
+}
+
 
 /* SMALL PHONES */
 
@@ -143,18 +214,8 @@ body {
 
   .instruction-text {
     font-size: 12px;
+
     letter-spacing: 2.5px;
-  }
-
-}
-
-/* DESKTOP */
-
-@media (min-width: 701px) {
-
-  .invitation {
-    width: min(80vw, 1080px);
-    max-height: 94vh;
   }
 
 }
