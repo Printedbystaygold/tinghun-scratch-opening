@@ -1,1 +1,160 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #5e080e;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  touch-action: none;
+}
+
+.experience {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(
+      circle at center,
+      #a51a22 0%,
+      #8e1018 55%,
+      #62070d 100%
+    );
+}
+
+/* ACTUAL INVITATION UNDERNEATH */
+
+.invitation {
+  position: absolute;
+  width: min(100vw, 1080px);
+  height: auto;
+  max-height: 100dvh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* SCRATCH CANVAS */
+
+#scratchCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+#scratchCanvas:active {
+  cursor: grabbing;
+}
+
+/* INSTRUCTION */
+
+.instruction {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+  color: #f9e6b2;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.instruction.hidden {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+.instruction-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+.instruction-text {
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+/* CONFETTI */
+
+#confettiCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#confettiCanvas.active {
+  opacity: 1;
+}
+
+/* WHITE/IVORY FADE */
+
+#fade {
+  position: absolute;
+  inset: 0;
+
+  background: #f7f0e2;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.8s ease;
+}
+
+#fade.active {
+  opacity: 1;
+}
+
+/* SMALL PHONES */
+
+@media (max-width: 400px) {
+
+  .instruction-text {
+    font-size: 12px;
+    letter-spacing: 2.5px;
+  }
+
+}
+
+/* DESKTOP */
+
+@media (min-width: 701px) {
+
+  .invitation {
+    width: min(80vw, 1080px);
+    max-height: 94vh;
+  }
+
+}
