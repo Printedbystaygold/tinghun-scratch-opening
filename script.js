@@ -1,106 +1,262 @@
-const invitation = document.getElementById("invitation");
-const scratchCanvas = document.getElementById("scratchCanvas");
-const scratchCtx = scratchCanvas.getContext("2d", {
-  willReadFrequently: true
-});
+const invitation =
+  document.getElementById("invitation");
 
-const confettiCanvas = document.getElementById("confettiCanvas");
-const confettiCtx = confettiCanvas.getContext("2d");
+const scratchCanvas =
+  document.getElementById("scratchCanvas");
 
-const instruction = document.getElementById("instruction");
-const fade = document.getElementById("fade");
+const scratchCtx =
+  scratchCanvas.getContext("2d", {
+    willReadFrequently: true
+  });
+
+const confettiCanvas =
+  document.getElementById("confettiCanvas");
+
+const confettiCtx =
+  confettiCanvas.getContext("2d");
+
+const instruction =
+  document.getElementById("instruction");
+
+const fade =
+  document.getElementById("fade");
+
+
+/* --------------------------------
+   SETTINGS
+-------------------------------- */
 
 const DESTINATION =
   "https://printedbystaygold.com/demo-pastelbloom-chinese-elegance";
 
 const SCRATCH_THRESHOLD = 0.75;
 
+
+/* --------------------------------
+   VARIABLES
+-------------------------------- */
+
 let isScratching = false;
+
 let completed = false;
+
 let lastPoint = null;
+
 let lastCheck = 0;
 
 let brushTexture = null;
 
 
-/* --------------------------------------------------
-   CANVAS SIZE
--------------------------------------------------- */
+/* --------------------------------
+   CARD SIZE
+-------------------------------- */
+
+let card = {
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0
+};
+
+
+/* --------------------------------
+   RESIZE
+-------------------------------- */
 
 function resizeCanvases() {
 
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
 
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const width =
+    window.innerWidth;
 
-  scratchCanvas.width = Math.round(width * dpr);
-  scratchCanvas.height = Math.round(height * dpr);
+  const height =
+    window.innerHeight;
 
-  scratchCanvas.style.width = width + "px";
-  scratchCanvas.style.height = height + "px";
 
-  scratchCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  scratchCanvas.width =
+    Math.round(width * dpr);
 
-  confettiCanvas.width = Math.round(width * dpr);
-  confettiCanvas.height = Math.round(height * dpr);
+  scratchCanvas.height =
+    Math.round(height * dpr);
 
-  confettiCanvas.style.width = width + "px";
-  confettiCanvas.style.height = height + "px";
+  scratchCanvas.style.width =
+    width + "px";
 
-  confettiCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  scratchCanvas.style.height =
+    height + "px";
+
+
+  scratchCtx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  confettiCanvas.width =
+    Math.round(width * dpr);
+
+  confettiCanvas.height =
+    Math.round(height * dpr);
+
+  confettiCanvas.style.width =
+    width + "px";
+
+  confettiCanvas.style.height =
+    height + "px";
+
+
+  confettiCtx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  calculateCard();
 
   createScratchCard();
-
 }
 
 
-/* --------------------------------------------------
-   RED TINGHUN CARD
--------------------------------------------------- */
+/* --------------------------------
+   CALCULATE CARD POSITION
+-------------------------------- */
+
+function calculateCard() {
+
+  const rect =
+    invitation.getBoundingClientRect();
+
+  card.x = rect.left;
+
+  card.y = rect.top;
+
+  card.width = rect.width;
+
+  card.height = rect.height;
+}
+
+
+/* --------------------------------
+   CREATE RED SCRATCH CARD
+-------------------------------- */
 
 function createScratchCard() {
 
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const w =
+    window.innerWidth;
 
-  scratchCtx.clearRect(0, 0, w, h);
+  const h =
+    window.innerHeight;
 
-  /*
-    Deep red base
-  */
 
-  const gradient = scratchCtx.createLinearGradient(
+  scratchCtx.clearRect(
     0,
     0,
     w,
     h
   );
 
-  gradient.addColorStop(0, "#a81720");
-  gradient.addColorStop(0.5, "#8f1018");
-  gradient.addColorStop(1, "#65080e");
-
-  scratchCtx.fillStyle = gradient;
-  scratchCtx.fillRect(0, 0, w, h);
-
 
   /*
-    Subtle gold texture
+    IMPORTANT:
+
+    Only the actual invitation/card
+    area becomes red.
+
+    Outside remains OFF-WHITE.
   */
 
   scratchCtx.save();
 
-  scratchCtx.globalAlpha = 0.08;
+  scratchCtx.beginPath();
 
-  for (let x = -h; x < w + h; x += 24) {
+  scratchCtx.rect(
+    card.x,
+    card.y,
+    card.width,
+    card.height
+  );
+
+  scratchCtx.clip();
+
+
+  /* RED GRADIENT */
+
+  const gradient =
+    scratchCtx.createLinearGradient(
+      card.x,
+      card.y,
+      card.x + card.width,
+      card.y + card.height
+    );
+
+  gradient.addColorStop(
+    0,
+    "#a81720"
+  );
+
+  gradient.addColorStop(
+    0.5,
+    "#8f1018"
+  );
+
+  gradient.addColorStop(
+    1,
+    "#65080e"
+  );
+
+  scratchCtx.fillStyle =
+    gradient;
+
+  scratchCtx.fillRect(
+    card.x,
+    card.y,
+    card.width,
+    card.height
+  );
+
+
+  /* SUBTLE TEXTURE */
+
+  scratchCtx.save();
+
+  scratchCtx.globalAlpha =
+    0.08;
+
+  for (
+    let x = card.x - card.height;
+    x < card.x + card.width + card.height;
+    x += 24
+  ) {
 
     scratchCtx.beginPath();
 
-    scratchCtx.moveTo(x, 0);
-    scratchCtx.lineTo(x + h, h);
+    scratchCtx.moveTo(
+      x,
+      card.y
+    );
 
-    scratchCtx.strokeStyle = "#f2d28c";
+    scratchCtx.lineTo(
+      x + card.height,
+      card.y + card.height
+    );
+
+    scratchCtx.strokeStyle =
+      "#f2d28c";
+
     scratchCtx.lineWidth = 1;
 
     scratchCtx.stroke();
@@ -109,240 +265,260 @@ function createScratchCard() {
   scratchCtx.restore();
 
 
-  /*
-    Decorative border
-  */
+  /* BORDER */
 
-  scratchCtx.save();
+  const margin =
+    Math.min(
+      card.width,
+      card.height
+    ) * 0.045;
 
-  const margin = Math.min(w, h) * 0.045;
 
-  scratchCtx.strokeStyle = "rgba(239, 201, 119, 0.9)";
+  scratchCtx.strokeStyle =
+    "rgba(239, 201, 119, 0.9)";
+
   scratchCtx.lineWidth = 1.5;
 
   scratchCtx.strokeRect(
-    margin,
-    margin,
-    w - margin * 2,
-    h - margin * 2
+    card.x + margin,
+    card.y + margin,
+    card.width - margin * 2,
+    card.height - margin * 2
   );
 
-  scratchCtx.strokeStyle = "rgba(239, 201, 119, 0.35)";
+
+  scratchCtx.strokeStyle =
+    "rgba(239, 201, 119, 0.35)";
+
   scratchCtx.lineWidth = 1;
 
   scratchCtx.strokeRect(
-    margin + 7,
-    margin + 7,
-    w - (margin + 7) * 2,
-    h - (margin + 7) * 2
+    card.x + margin + 7,
+    card.y + margin + 7,
+    card.width - (margin + 7) * 2,
+    card.height - (margin + 7) * 2
   );
 
-  scratchCtx.restore();
 
+  /* 囍 */
 
-  /*
-    Chinese double happiness symbol
-  */
+  scratchCtx.fillStyle =
+    "#edc779";
 
-  scratchCtx.save();
-
-  scratchCtx.fillStyle = "#edc779";
-  scratchCtx.globalAlpha = 0.9;
+  scratchCtx.globalAlpha =
+    0.9;
 
   scratchCtx.font =
-    "bold " + Math.min(w, h) * 0.18 + "px serif";
+    "bold " +
+    Math.min(
+      card.width,
+      card.height
+    ) *
+    0.18 +
+    "px serif";
 
-  scratchCtx.textAlign = "center";
-  scratchCtx.textBaseline = "middle";
+  scratchCtx.textAlign =
+    "center";
+
+  scratchCtx.textBaseline =
+    "middle";
 
   scratchCtx.fillText(
     "囍",
-    w / 2,
-    h * 0.42
+    card.x + card.width / 2,
+    card.y + card.height * 0.42
   );
 
-  scratchCtx.restore();
 
+  /* TEXT */
 
-  /*
-    Elegant instruction area
-  */
+  scratchCtx.globalAlpha = 1;
 
-  scratchCtx.save();
-
-  scratchCtx.textAlign = "center";
-
-  scratchCtx.fillStyle = "#f2d59b";
+  scratchCtx.fillStyle =
+    "#f2d59b";
 
   scratchCtx.font =
-    "500 " + Math.max(13, Math.min(w, h) * 0.022) +
+    "500 " +
+    Math.max(
+      13,
+      Math.min(
+        card.width,
+        card.height
+      ) * 0.022
+    ) +
     "px Georgia";
-
-  scratchCtx.letterSpacing = "3px";
 
   scratchCtx.fillText(
     "A SPECIAL INVITATION AWAITS",
-    w / 2,
-    h * 0.58
+    card.x + card.width / 2,
+    card.y + card.height * 0.58
   );
+
 
   scratchCtx.restore();
 
-
-  /*
-    Gold decorative lines
-  */
-
-  drawDecorativeCorner(w * 0.18, h * 0.68, 1);
-  drawDecorativeCorner(w * 0.82, h * 0.68, -1);
-
-
-  /*
-    Create scratch texture
-  */
 
   createBrushTexture();
 }
 
 
-/* --------------------------------------------------
-   DECORATIVE CORNERS
--------------------------------------------------- */
-
-function drawDecorativeCorner(x, y, direction) {
-
-  scratchCtx.save();
-
-  scratchCtx.translate(x, y);
-  scratchCtx.scale(direction, 1);
-
-  scratchCtx.strokeStyle = "rgba(239, 201, 119, 0.7)";
-  scratchCtx.lineWidth = 1.5;
-
-  scratchCtx.beginPath();
-
-  scratchCtx.moveTo(0, 0);
-  scratchCtx.lineTo(55, 0);
-
-  scratchCtx.moveTo(0, 0);
-  scratchCtx.lineTo(0, 32);
-
-  scratchCtx.moveTo(10, 8);
-  scratchCtx.lineTo(43, 8);
-
-  scratchCtx.stroke();
-
-  scratchCtx.restore();
-}
-
-
-/* --------------------------------------------------
-   IRREGULAR SCRATCH BRUSH
--------------------------------------------------- */
+/* --------------------------------
+   BRUSH TEXTURE
+-------------------------------- */
 
 function createBrushTexture() {
 
-  /*
-    We create an elongated, organic brush.
+  const size = 160;
 
-    This is NOT a circle.
-
-    The shape has:
-    - uneven edges
-    - varied density
-    - long horizontal texture
-    - soft transparency
-  */
-
-  const size = 130;
-
-  brushTexture = document.createElement("canvas");
+  brushTexture =
+    document.createElement("canvas");
 
   brushTexture.width = size;
   brushTexture.height = size;
 
-  const ctx = brushTexture.getContext("2d");
+  const ctx =
+    brushTexture.getContext("2d");
 
-  const image = ctx.createImageData(size, size);
+  const image =
+    ctx.createImageData(
+      size,
+      size
+    );
 
-  const center = size / 2;
+  const center =
+    size / 2;
 
-  for (let y = 0; y < size; y++) {
 
-    for (let x = 0; x < size; x++) {
+  for (
+    let y = 0;
+    y < size;
+    y++
+  ) {
+
+    for (
+      let x = 0;
+      x < size;
+      x++
+    ) {
 
       /*
-        Organic elliptical distance
+        ELONGATED brush.
+
+        NOT circular.
       */
 
-      const nx = (x - center) / 58;
-      const ny = (y - center) / 26;
+      const nx =
+        (x - center) / 72;
+
+      const ny =
+        (y - center) / 27;
+
 
       const distance =
-        Math.sqrt(nx * nx + ny * ny);
+        Math.sqrt(
+          nx * nx +
+          ny * ny
+        );
+
 
       /*
-        Irregular noise
+        Organic edge.
       */
 
-      const wave =
-        Math.sin(x * 0.31) *
-        Math.sin(y * 0.17) *
-        0.15;
+      const noise =
+        Math.sin(x * 0.27) *
+        Math.sin(y * 0.19) *
+        0.12;
+
 
       const edge =
-        distance + wave;
+        distance + noise;
+
 
       let alpha = 0;
+
 
       if (edge < 1) {
 
         alpha =
-          (1 - edge) *
-          255;
-
-        /*
-          Fine paper-like variation
-        */
+          (1 - edge) * 255;
 
         alpha *=
-          0.72 +
-          Math.random() * 0.28;
+          0.75 +
+          Math.random() * 0.25;
       }
+
 
       const index =
         (y * size + x) * 4;
 
-      image.data[index] = 255;
-      image.data[index + 1] = 255;
-      image.data[index + 2] = 255;
-      image.data[index + 3] = alpha;
+
+      image.data[index] =
+        255;
+
+      image.data[index + 1] =
+        255;
+
+      image.data[index + 2] =
+        255;
+
+      image.data[index + 3] =
+        alpha;
     }
   }
 
-  ctx.putImageData(image, 0, 0);
+
+  ctx.putImageData(
+    image,
+    0,
+    0
+  );
 }
 
 
-/* --------------------------------------------------
-   SCRATCH POINT
--------------------------------------------------- */
+/* --------------------------------
+   GET POINTER POSITION
+-------------------------------- */
 
 function getPoint(event) {
 
   const rect =
     scratchCanvas.getBoundingClientRect();
 
+
   return {
-    x: event.clientX - rect.left,
-    y: event.clientY - rect.top
+    x:
+      event.clientX -
+      rect.left,
+
+    y:
+      event.clientY -
+      rect.top
   };
 }
 
 
-/* --------------------------------------------------
+/* --------------------------------
+   CHECK IF POINTER IS ON CARD
+-------------------------------- */
+
+function isInsideCard(point) {
+
+  return (
+    point.x >= card.x &&
+    point.x <=
+      card.x + card.width &&
+
+    point.y >= card.y &&
+    point.y <=
+      card.y + card.height
+  );
+}
+
+
+/* --------------------------------
    SMOOTH SCRATCH
--------------------------------------------------- */
+-------------------------------- */
 
 function scratchTo(point) {
 
@@ -353,63 +529,96 @@ function scratchTo(point) {
     return;
   }
 
+
   const dx =
-    point.x - lastPoint.x;
+    point.x -
+    lastPoint.x;
 
   const dy =
-    point.y - lastPoint.y;
+    point.y -
+    lastPoint.y;
+
 
   const distance =
-    Math.sqrt(dx * dx + dy * dy);
+    Math.sqrt(
+      dx * dx +
+      dy * dy
+    );
+
 
   if (distance < 1) return;
 
 
   /*
-    Angle follows the user's movement.
+    Small interpolation steps.
 
-    This makes the scratch look like rubbing,
-    rather than stamping.
-  */
-
-  const angle =
-    Math.atan2(dy, dx);
-
-
-  /*
-    Interpolate between previous point
-    and current point.
-
-    This prevents gaps when the finger
-    moves quickly.
+    This makes desktop mouse movement
+    smooth even when the mouse moves fast.
   */
 
   const steps =
-    Math.ceil(distance / 5);
+    Math.ceil(
+      distance / 4
+    );
 
-  for (let i = 1; i <= steps; i++) {
 
-    const t = i / steps;
+  const angle =
+    Math.atan2(
+      dy,
+      dx
+    );
+
+
+  for (
+    let i = 1;
+    i <= steps;
+    i++
+  ) {
+
+    const t =
+      i / steps;
+
 
     const x =
-      lastPoint.x + dx * t;
+      lastPoint.x +
+      dx * t;
 
     const y =
-      lastPoint.y + dy * t;
+      lastPoint.y +
+      dy * t;
 
-    stampBrush(x, y, angle);
+
+    /*
+      Only scratch inside card.
+    */
+
+    if (
+      x >= card.x &&
+      x <= card.x + card.width &&
+      y >= card.y &&
+      y <= card.y + card.height
+    ) {
+
+      stampBrush(
+        x,
+        y,
+        angle
+      );
+    }
   }
+
 
   lastPoint = point;
 
 
-  /*
-    Check progress periodically.
-  */
+  const now =
+    performance.now();
 
-  const now = performance.now();
 
-  if (now - lastCheck > 350) {
+  if (
+    now - lastCheck >
+    300
+  ) {
 
     lastCheck = now;
 
@@ -418,36 +627,67 @@ function scratchTo(point) {
 }
 
 
-/* --------------------------------------------------
-   BRUSH STAMP
--------------------------------------------------- */
+/* --------------------------------
+   STAMP BRUSH
+-------------------------------- */
 
-function stampBrush(x, y, angle) {
+function stampBrush(
+  x,
+  y,
+  angle
+) {
 
   if (!brushTexture) return;
 
+
   scratchCtx.save();
+
 
   scratchCtx.globalCompositeOperation =
     "destination-out";
 
-  scratchCtx.translate(x, y);
 
-  scratchCtx.rotate(angle);
+  /*
+    Keep erasing confined to card.
+  */
+
+  scratchCtx.beginPath();
+
+  scratchCtx.rect(
+    card.x,
+    card.y,
+    card.width,
+    card.height
+  );
+
+  scratchCtx.clip();
+
+
+  scratchCtx.translate(
+    x,
+    y
+  );
+
+
+  scratchCtx.rotate(
+    angle
+  );
 
 
   /*
-    Slight random variation.
+    Slight variation.
 
-    This keeps the scratch organic
-    without creating visible circles.
+    Still one continuous rubbing texture.
   */
 
   const scaleX =
-    0.82 + Math.random() * 0.25;
+    0.95 +
+    Math.random() * 0.15;
 
   const scaleY =
-    0.82 + Math.random() * 0.18;
+    0.90 +
+    Math.random() * 0.10;
+
 
   scratchCtx.scale(
     scaleX,
@@ -455,27 +695,26 @@ function stampBrush(x, y, angle) {
   );
 
 
-  /*
-    Draw elongated textured brush.
-  */
+  scratchCtx.globalAlpha =
+    0.9;
 
-  scratchCtx.globalAlpha = 0.92;
 
   scratchCtx.drawImage(
     brushTexture,
-    -65,
-    -65,
-    130,
-    130
+    -80,
+    -80,
+    160,
+    160
   );
+
 
   scratchCtx.restore();
 }
 
 
-/* --------------------------------------------------
-   POINTER EVENTS
--------------------------------------------------- */
+/* --------------------------------
+   POINTER DOWN
+-------------------------------- */
 
 scratchCanvas.addEventListener(
   "pointerdown",
@@ -483,65 +722,128 @@ scratchCanvas.addEventListener(
 
     if (completed) return;
 
+
     event.preventDefault();
+
+
+    const point =
+      getPoint(event);
+
+
+    /*
+      Don't start scratching
+      outside the red card.
+    */
+
+    if (
+      !isInsideCard(point)
+    ) {
+
+      return;
+    }
+
 
     isScratching = true;
 
-    scratchCanvas.setPointerCapture(
-      event.pointerId
-    );
-
-    lastPoint = getPoint(event);
-
-    instruction.classList.add("hidden");
 
     /*
-      Start with a short organic stroke
-      rather than a circular dot.
+      VERY IMPORTANT FOR PC.
+
+      Capture the mouse pointer so
+      scratching continues even if
+      the cursor moves quickly.
     */
 
-    const p = lastPoint;
+    try {
+
+      scratchCanvas.setPointerCapture(
+        event.pointerId
+      );
+
+    } catch (error) {}
+
+
+    lastPoint =
+      point;
+
+
+    instruction.classList.add(
+      "hidden"
+    );
+
 
     stampBrush(
-      p.x,
-      p.y,
-      Math.random() * Math.PI
+      point.x,
+      point.y,
+      0
     );
 
   },
-  { passive: false }
+  {
+    passive: false
+  }
 );
 
+
+/* --------------------------------
+   POINTER MOVE
+-------------------------------- */
 
 scratchCanvas.addEventListener(
   "pointermove",
   event => {
 
-    if (!isScratching || completed) return;
+    if (
+      !isScratching ||
+      completed
+    ) {
+
+      return;
+    }
+
 
     event.preventDefault();
 
-    scratchTo(getPoint(event));
+
+    scratchTo(
+      getPoint(event)
+    );
 
   },
-  { passive: false }
+  {
+    passive: false
+  }
 );
 
+
+/* --------------------------------
+   STOP
+-------------------------------- */
 
 function stopScratching(event) {
 
   isScratching = false;
+
   lastPoint = null;
 
-  if (
-    event &&
-    scratchCanvas.hasPointerCapture(event.pointerId)
-  ) {
 
-    scratchCanvas.releasePointerCapture(
-      event.pointerId
-    );
-  }
+  try {
+
+    if (
+      event &&
+      scratchCanvas.hasPointerCapture(
+        event.pointerId
+      )
+    ) {
+
+      scratchCanvas.releasePointerCapture(
+        event.pointerId
+      );
+
+    }
+
+  } catch (error) {}
+
 
   checkProgress();
 }
@@ -552,106 +854,129 @@ scratchCanvas.addEventListener(
   stopScratching
 );
 
+
 scratchCanvas.addEventListener(
   "pointercancel",
   stopScratching
 );
 
-scratchCanvas.addEventListener(
-  "pointerleave",
-  event => {
 
-    if (isScratching) {
-      stopScratching(event);
-    }
-
-  }
-);
-
-
-/* --------------------------------------------------
-   SCRATCH PROGRESS
--------------------------------------------------- */
+/* --------------------------------
+   PROGRESS
+-------------------------------- */
 
 function checkProgress() {
 
   if (completed) return;
 
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-
-  /*
-    Downsample the canvas.
-
-    This makes progress checking much faster
-    on mobile devices.
-  */
 
   const sampleSize = 80;
 
+
   const temp =
-    document.createElement("canvas");
+    document.createElement(
+      "canvas"
+    );
 
-  temp.width = sampleSize;
-  temp.height = sampleSize;
 
-  const tempCtx =
-    temp.getContext("2d", {
-      willReadFrequently: true
-    });
+  temp.width =
+    sampleSize;
 
-  tempCtx.drawImage(
+  temp.height =
+    sampleSize;
+
+
+  const ctx =
+    temp.getContext(
+      "2d",
+      {
+        willReadFrequently: true
+      }
+    );
+
+
+  /*
+    Only measure the actual card.
+  */
+
+  ctx.drawImage(
     scratchCanvas,
+
+    card.x,
+    card.y,
+    card.width,
+    card.height,
+
     0,
     0,
     sampleSize,
     sampleSize
   );
 
+
   const data =
-    tempCtx.getImageData(
+    ctx.getImageData(
       0,
       0,
       sampleSize,
       sampleSize
     ).data;
 
+
   let transparent = 0;
 
+
   const total =
-    sampleSize * sampleSize;
+    sampleSize *
+    sampleSize;
 
-  for (let i = 3; i < data.length; i += 4) {
 
-    if (data[i] < 80) {
+  for (
+    let i = 3;
+    i < data.length;
+    i += 4
+  ) {
+
+    if (
+      data[i] < 80
+    ) {
+
       transparent++;
     }
   }
 
-  const progress =
-    transparent / total;
 
-  if (progress >= SCRATCH_THRESHOLD) {
+  const progress =
+    transparent /
+    total;
+
+
+  if (
+    progress >=
+    SCRATCH_THRESHOLD
+  ) {
 
     completeExperience();
   }
 }
 
 
-/* --------------------------------------------------
-   COMPLETION
--------------------------------------------------- */
+/* --------------------------------
+   COMPLETE
+-------------------------------- */
 
 function completeExperience() {
 
   if (completed) return;
 
+
   completed = true;
 
   isScratching = false;
 
+
   /*
-    Make sure the invitation is fully visible.
+    Remove remaining red layer.
   */
 
   scratchCtx.clearRect(
@@ -662,58 +987,66 @@ function completeExperience() {
   );
 
 
-  /*
-    Start elegant confetti.
-  */
-
   startConfetti();
 
 
-  /*
-    Give the guest a moment to see
-    the revealed invitation.
-  */
+  setTimeout(
+    () => {
 
-  setTimeout(() => {
+      fade.classList.add(
+        "active"
+      );
 
-    fade.classList.add("active");
+    },
+    1500
+  );
 
-  }, 1500);
 
+  setTimeout(
+    () => {
 
-  /*
-    Then automatically open Canva.
-  */
+      window.location.href =
+        DESTINATION;
 
-  setTimeout(() => {
-
-    window.location.href = DESTINATION;
-
-  }, 2300);
+    },
+    2300
+  );
 }
 
 
-/* --------------------------------------------------
+/* --------------------------------
    CONFETTI
--------------------------------------------------- */
+-------------------------------- */
 
 let confetti = [];
+
 let confettiRunning = false;
+
 
 function startConfetti() {
 
-  confettiCanvas.classList.add("active");
+  confettiCanvas.classList.add(
+    "active"
+  );
+
 
   confetti = [];
+
 
   const amount =
     window.innerWidth < 600
       ? 75
       : 120;
 
-  for (let i = 0; i < amount; i++) {
+
+  for (
+    let i = 0;
+    i < amount;
+    i++
+  ) {
 
     confetti.push({
+
       x:
         Math.random() *
         window.innerWidth,
@@ -751,10 +1084,6 @@ function startConfetti() {
         0.65 +
         Math.random() * 0.35,
 
-      /*
-        Tinghun-inspired colors
-      */
-
       color:
         [
           "#e7c56f",
@@ -763,10 +1092,13 @@ function startConfetti() {
           "#b88932",
           "#9e151d"
         ][
-          Math.floor(Math.random() * 5)
+          Math.floor(
+            Math.random() * 5
+          )
         ]
     });
   }
+
 
   if (!confettiRunning) {
 
@@ -781,8 +1113,12 @@ function startConfetti() {
 
 function animateConfetti() {
 
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const w =
+    window.innerWidth;
+
+  const h =
+    window.innerHeight;
+
 
   confettiCtx.clearRect(
     0,
@@ -791,15 +1127,25 @@ function animateConfetti() {
     h
   );
 
-  for (const piece of confetti) {
 
-    piece.y += piece.speed;
-    piece.x += piece.drift;
+  for (
+    const piece of confetti
+  ) {
+
+    piece.y +=
+      piece.speed;
+
+    piece.x +=
+      piece.drift;
 
     piece.rotation +=
       piece.rotationSpeed;
 
-    if (piece.y > h + 30) {
+
+    if (
+      piece.y >
+      h + 30
+    ) {
 
       piece.y = -20;
 
@@ -807,22 +1153,28 @@ function animateConfetti() {
         Math.random() * w;
     }
 
+
     confettiCtx.save();
+
 
     confettiCtx.translate(
       piece.x,
       piece.y
     );
 
+
     confettiCtx.rotate(
       piece.rotation
     );
 
+
     confettiCtx.globalAlpha =
       piece.opacity;
 
+
     confettiCtx.fillStyle =
       piece.color;
+
 
     confettiCtx.fillRect(
       -piece.width / 2,
@@ -831,8 +1183,10 @@ function animateConfetti() {
       piece.height
     );
 
+
     confettiCtx.restore();
   }
+
 
   if (completed) {
 
@@ -847,9 +1201,19 @@ function animateConfetti() {
 }
 
 
-/* --------------------------------------------------
-   RESIZE
--------------------------------------------------- */
+/* --------------------------------
+   START
+-------------------------------- */
+
+invitation.addEventListener(
+  "load",
+  () => {
+
+    resizeCanvases();
+
+  }
+);
+
 
 window.addEventListener(
   "resize",
@@ -863,24 +1227,7 @@ window.addEventListener(
 );
 
 
-/* --------------------------------------------------
-   START
--------------------------------------------------- */
-
-invitation.addEventListener(
-  "load",
-  () => {
-
-    resizeCanvases();
-
-  }
-);
-
-
-/*
-  If image is already cached.
-*/
-
 if (invitation.complete) {
+
   resizeCanvases();
 }
