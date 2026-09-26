@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
+  <title>Tinghun Invitation</title>
+
+  <meta
+    property="og:title"
+    content="You Are Cordially Invited"
+  />
+
+  <meta
+    property="og:description"
+    content="Scratch to reveal the invitation."
+  />
+
+  <meta
+    property="og:image"
+    content="https://printedbystaygold.github.io/tinghun-scratch-opening/tinghun-invitation.jpg"
+  />
+
+  <meta
+    property="og:url"
+    content="https://printedbystaygold.github.io/tinghun-scratch-opening/"
+  />
+
+  <meta name="theme-color" content="#8e1018" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <main class="experience">
+
+    <!-- INVITATION UNDERNEATH -->
+    <img
+      id="invitation"
+      class="invitation"
+      src="tinghun-invitation.jpg"
+      alt="Wedding Invitation"
+    />
+
+    <!-- RED TINGHUN SCRATCH CARD -->
+    <canvas id="scratchCanvas"></canvas>
+
+    <!-- INSTRUCTION -->
+    <div id="instruction" class="instruction">
+      <div class="instruction-icon">✦</div>
+      <div class="instruction-text">Scratch to reveal</div>
+    </div>
+
+    <!-- CONFETTI -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- FADE -->
+    <div id="fade"></div>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
